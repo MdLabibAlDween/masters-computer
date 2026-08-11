@@ -332,6 +332,7 @@ create policy "admins manage services"
   using (public.is_admin())
   with check (public.is_admin());
 
+drop trigger if exists trg_services_updated_at on public.services;
 create trigger trg_services_updated_at
   before update on public.services
   for each row execute function public.set_updated_at();
@@ -410,6 +411,7 @@ create policy "admins manage notices"
   using (public.is_admin())
   with check (public.is_admin());
 
+drop trigger if exists trg_notices_updated_at on public.notices;
 create trigger trg_notices_updated_at
   before update on public.notices
   for each row execute function public.set_updated_at();

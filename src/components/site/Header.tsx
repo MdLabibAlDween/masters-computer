@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { BusinessSettings, ShopStatusOverride } from '@/types/db'
+import type { ShopStatusInput } from '@/lib/shop-status'
+import ShopStatusCard from '@/components/site/ShopStatusCard'
 
 const NAV = [
   { href: '/', label: 'হোম' },
@@ -14,25 +16,46 @@ const NAV = [
   { href: '/contact', label: 'যোগাযোগ' },
 ]
 
+const EMPTY_SCHEDULE: ShopStatusInput = {
+  hours: [],
+  breaks: [],
+  holidays: [],
+  specialDays: [],
+  override: null,
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [settings, setSettings] = useState<BusinessSettings | null>(null)
-  const [override, setOverride] = useState<ShopStatusOverride | null>(null)
-  const [error, setError] = useState(false)
+  const [schedule, setSchedule] = useState<ShopStatusInput>(EMPTY_SCHEDULE)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
     let alive = true
     Promise.all([
       supabase.from('business_settings').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('business_hours').select('*').order('day_of_week'),
+      supabase.from('break_times').select('*').order('day_of_week'),
+      supabase.from('holidays').select('*').order('date'),
+      supabase.from('special_days').select('*').order('date'),
       supabase.from('shop_status_overrides').select('*').eq('id', 1).maybeSingle(),
-    ]).then(([s, o]) => {
-      if (!alive) return
-      setSettings(s.data)
-      setOverride(o.data as ShopStatusOverride | null)
-    }).catch(() => {
-      if (alive) setError(true)
-    })
+    ])
+      .then(([s, h, b, hol, sp, o]) => {
+        if (!alive) return
+        setSettings(s.data)
+        setSchedule({
+          hours: h.data ?? [],
+          breaks: b.data ?? [],
+          holidays: hol.data ?? [],
+          specialDays: sp.data ?? [],
+          override: (o.data as ShopStatusOverride | null) ?? null,
+        })
+        setLoaded(true)
+      })
+      .catch(() => {
+        if (alive) setLoaded(true)
+      })
     return () => {
       alive = false
     }
@@ -72,15 +95,18 @@ export default function Header() {
             ))}
           </nav>
 
-          {settings?.phone && (
-            <a
-              href={`tel:${settings.phone}`}
-              className="hidden lg:inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
-            >
-              <span className="text-gold-400">☎</span>
-              <span dir="ltr">{settings.phone}</span>
-            </a>
-          )}
+          <div className="hidden lg:flex items-center gap-3">
+            {loaded && <ShopStatusCard schedule={schedule} variant="chip" />}
+            {settings?.phone && (
+              <a
+                href={`tel:${settings.phone}`}
+                className="inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
+              >
+                <span className="text-gold-400">☎</span>
+                <span dir="ltr">{settings.phone}</span>
+              </a>
+            )}
+          </div>
 
           <button
             onClick={() => setOpen(!open)}
@@ -98,7 +124,8 @@ export default function Header() {
         </div>
 
         {open && (
-          <nav className="md:hidden pb-4 flex flex-col gap-1">
+          <nav className="md:hidden pb-4 flex flex-col gap-2">
+            {loaded && <ShopStatusCard schedule={schedule} variant="chip" />}
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -122,8 +149,8 @@ export default function Header() {
           </nav>
         )}
       </div>
-      {!error && override && (
-        <HeaderStatusBar label={override.status === 'force_open' ? 'সাময়িকভাবে খোলা' : override.status === 'force_closed' || override.status === 'temp_closed' ? 'সাময়িকভাবে বন্ধ' : ''} />
+      {loaded && schedule.override && (
+        <HeaderStatusBar label={schedule.override.status === 'force_open' ? 'সাময়িকভাবে খোলা' : schedule.override.status === 'force_closed' || schedule.override.status === 'temp_closed' ? 'সাময়িকভাবে বন্ধ' : ''} />
       )}
     </header>
   )

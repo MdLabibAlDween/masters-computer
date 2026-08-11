@@ -275,10 +275,10 @@ export default async function HomePage() {
               <div className="font-bold mt-2">ঠিকানা</div>
               <div className="text-sm text-slate-500">{settings?.address}</div>
             </div>
-            <Link href="/contact" className={`${contactTile} bg-brand-700 text-white hover:bg-brand-800`}>
+            <Link href="/contact" className={contactTile}>
               <div className="text-3xl">📩</div>
-              <div className="font-bold mt-2">বার্তা পাঠান</div>
-              <div className="text-sm text-brand-100">কন্টাক্ট ফর্ম খুলুন →</div>
+              <div className="font-bold mt-2 text-brand-800">বার্তা পাঠান</div>
+              <div className="text-sm text-slate-500">কন্টাক্ট ফর্ম খুলুন →</div>
             </Link>
           </div>
         </div>
