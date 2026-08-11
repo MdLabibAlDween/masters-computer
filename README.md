@@ -27,11 +27,19 @@ Values from Supabase Dashboard → Project Settings → API. The service-role ke
 
 ## 3. Create the first Super Admin
 
+**Option A — Supabase dashboard (no script):**
+1. Supabase Dashboard → **Authentication → Users** → **Add user** → email + password → Create user.
+2. Click the user row and copy its UUID (`id`).
+3. Open `supabase/add-admin.sql`, replace `<USER_UUID>` and `<OWNER_NAME>`, then run it in the SQL Editor.
+4. If login says "Email not confirmed": **Authentication → Providers → Email** → turn OFF **Confirm email** (or click the confirmation link in the user's inbox).
+
+**Option B — script (uses the service-role key locally):**
+
 ```bash
 npm run setup-admin -- "owner@email.com" "a-strong-password" "Owner Name"
 ```
 
-This uses the service-role key locally to create the auth user and link it in `admin_users` with the `super_admin` role. Alternative (manual): create the user in Supabase Auth dashboard, then run:
+This creates the auth user and links it in `admin_users` with the `super_admin` role. Manual alternative: create the user in Supabase Auth dashboard, then run:
 
 ```sql
 insert into public.admin_users (user_id, name, role) values ('<auth-user-uuid>', 'Owner', 'super_admin');

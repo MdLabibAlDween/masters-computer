@@ -17,20 +17,6 @@ begin
 end;
 $$;
 
--- Returns true when the currently logged-in user is an active admin.
-create or replace function public.is_admin()
-returns boolean
-language sql
-security definer
-set search_path = public
-stable
-as $$
-  select exists (
-    select 1 from public.admin_users a
-    where a.user_id = auth.uid() and a.active
-  );
-$$;
-
 -- =====================================================================
 -- 1. Admin users
 -- =====================================================================
@@ -45,6 +31,21 @@ create table if not exists public.admin_users (
 );
 
 alter table public.admin_users enable row level security;
+
+-- Returns true when the currently logged-in user is an active admin.
+-- Defined after admin_users so the SQL-language function body validates.
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.admin_users a
+    where a.user_id = auth.uid() and a.active
+  );
+$$;
 
 create policy "admins can read admin_users"
   on public.admin_users for select
