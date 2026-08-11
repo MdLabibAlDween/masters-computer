@@ -14,11 +14,10 @@ type Row = {
   active: boolean
   featured: boolean
   display_order: number
-  categories: { id: number; name_bn: string } | null
+  service_categories: { id: number; name_bn: string } | null
 }
 
-export default function ServiceRows({ services }: { services: Row[] }) {
-  const router = useRouter()
+export default function ServiceRows({ services }: { services: Row[] }) {  const router = useRouter()
   const [rows, setRows] = useState(services)
   const [busyId, setBusyId] = useState<number | null>(null)
 
@@ -64,7 +63,7 @@ export default function ServiceRows({ services }: { services: Row[] }) {
               </div>
             </div>
           </td>
-          <td className="px-4 py-3 text-sm font-semibold text-slate-500">{s.categories?.name_bn ?? '—'}</td>
+          <td className="px-4 py-3 text-sm font-semibold text-slate-500">{s.service_categories?.name_bn ?? '—'}</td>
           <td className="px-4 py-3">
             <button onClick={() => toggle(s.id, { active: !s.active })} disabled={busyId === s.id}>
               {s.active ? <Badge tone="green">দৃশ্যমান</Badge> : <Badge tone="red">লুকানো</Badge>}

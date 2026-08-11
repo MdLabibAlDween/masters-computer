@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import CrudManager, { type CrudField } from '@/components/admin/CrudManager'
 import { Card, PageHeader } from '@/components/admin/ui'
-import { formatTimeBn } from '@/lib/format'
 
 export const metadata = { title: 'বিশেষ দিন' }
 
@@ -27,7 +26,7 @@ export default async function ShopSpecialDaysPage() {
           table="special_days"
           fields={FIELDS}
           initial={days ?? []}
-          rowLabel={(r) => `${String(r.date)} — ${formatTimeBn(String(r.open_time))} থেকে ${formatTimeBn(String(r.close_time))}`}
+          rowLabel="{{date}} — {{open_time}} থেকে {{close_time}}"
         />
       </Card>
     </div>

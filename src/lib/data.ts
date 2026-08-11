@@ -70,7 +70,7 @@ export async function getServices(options?: {
   const supabase = await createClient()
   let query = supabase
     .from('services')
-    .select('*, categories(id, name_bn, slug, icon)')
+    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon)')
   if (!options?.includeInactive) query = query.eq('active', true)
   if (options?.featuredOnly) query = query.eq('featured', true)
   const { data } = await query.order('display_order')
@@ -83,7 +83,7 @@ export async function getServiceBySlug(
   const supabase = await createClient()
   const { data } = await supabase
     .from('services')
-    .select('*, categories(id, name_bn, slug, icon)')
+    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon)')
     .eq('slug', slug)
     .maybeSingle()
   return data

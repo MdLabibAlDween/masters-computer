@@ -105,7 +105,7 @@ export type Service = {
 }
 
 export type ServiceWithCategory = Service & {
-  categories: Pick<ServiceCategory, 'id' | 'name_bn' | 'slug' | 'icon'> | null
+  service_categories: Pick<ServiceCategory, 'id' | 'name_bn' | 'slug' | 'icon'> | null
 }
 
 export type ServiceDocument = {

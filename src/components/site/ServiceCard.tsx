@@ -25,7 +25,7 @@ export default function ServiceCard({ service }: { service: ServiceWithCategory 
       </p>
       <div className="mt-4 flex items-center justify-between">
         <span className="text-xs font-semibold text-slate-400">
-          {service.categories?.name_bn}
+          {service.service_categories?.name_bn}
         </span>
         <span className="text-brand-600 text-sm font-bold group-hover:translate-x-1 transition-transform">
           বিস্তারিত →

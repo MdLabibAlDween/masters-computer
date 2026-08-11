@@ -56,7 +56,7 @@ export default async function ServiceDetailPage({
                     {service.name_bn}
                   </h1>
                   <p className="text-sm text-slate-400 font-semibold mt-1">
-                    {service.categories?.name_bn}
+                    {service.service_categories?.name_bn}
                     {service.featured && <span className="ml-2 text-gold-600">⭐ জনপ্রিয়</span>}
                   </p>
                 </div>
@@ -125,7 +125,7 @@ export default async function ServiceDetailPage({
             {categoryServices.length > 0 && (
               <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">
                 <h2 className="text-lg font-extrabold text-brand-900 mb-4">
-                  {service.categories?.name_bn ?? 'একই ক্যাটাগরি'} — আরও সেবা
+                  {service.service_categories?.name_bn ?? 'একই ক্যাটাগরি'} — আরও সেবা
                 </h2>
                 <div className="space-y-2">
                   {categoryServices.map((s) => (

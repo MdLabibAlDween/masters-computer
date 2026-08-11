@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import CrudManager, { type CrudField } from '@/components/admin/CrudManager'
 import { Card, PageHeader } from '@/components/admin/ui'
-import { DAYS_BN } from '@/lib/constants'
-import { formatTimeBn } from '@/lib/format'
 
 export const metadata = { title: 'বিরতির সময়' }
 
@@ -28,7 +26,7 @@ export default async function ShopBreaksPage() {
           table="break_times"
           fields={FIELDS}
           initial={breaks ?? []}
-          rowLabel={(r) => `${DAYS_BN[Number(r.day_of_week)]}: ${formatTimeBn(String(r.start_time))} — ${formatTimeBn(String(r.end_time))}`}
+          rowLabel="{{day_of_week}}: {{start_time}} — {{end_time}}"
         />
       </Card>
     </div>

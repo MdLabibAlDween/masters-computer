@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { DAYS_BN } from '@/lib/constants'
+import { formatTimeBn } from '@/lib/format'
 import { Btn, Empty, inputCls } from './ui'
 
 type FieldType = 'text' | 'time' | 'date' | 'weekday' | 'textarea' | 'checkbox'
@@ -25,13 +26,12 @@ export default function CrudManager({
   table: 'break_times' | 'holidays' | 'special_days'
   fields: CrudField[]
   initial: Row[]
-  rowLabel: (row: Row) => string
+  rowLabel: string
 }) {
   const [rows, setRows] = useState<Row[]>(initial)
   const [savingId, setSavingId] = useState<number | null>(null)
 
-  function makeEmpty(): Row {
-    const row: Row = {}
+  function makeEmpty(): Row {    const row: Row = {}
     for (const f of fields) row[f.name] = f.type === 'weekday' ? 0 : ''
     return row
   }
@@ -90,7 +90,7 @@ export default function CrudManager({
           {rows.map((row, idx) => (
             <div key={idx} className="rounded-xl border border-slate-100 p-4 space-y-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-bold text-brand-800">{rowLabel(row)}</span>
+                <span className="text-sm font-bold text-brand-800">{renderLabel(rowLabel, row, fields)}</span>
                 <div className="flex gap-2">
                   {row.id !== undefined && Number(row.id) > 0 ? (
                     <Btn onClick={() => removeExisting(row)} variant="danger" className="py-1.5 px-3 text-xs">
@@ -153,4 +153,15 @@ export default function CrudManager({
       </div>
     </div>
   )
+}
+
+function renderLabel(template: string, row: Row, fields: CrudField[]): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (_m, name: string) => {
+    const v = row[name]
+    if (v === undefined || v === null || v === '') return ''
+    const f = fields.find((x) => x.name === name)
+    if (f?.type === 'weekday') return DAYS_BN[Number(v)] ?? String(v)
+    if (f?.type === 'time') return formatTimeBn(String(v))
+    return String(v)
+  })
 }

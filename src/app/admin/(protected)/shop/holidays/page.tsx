@@ -25,7 +25,7 @@ export default async function ShopHolidaysPage() {
           table="holidays"
           fields={FIELDS}
           initial={holidays ?? []}
-          rowLabel={(r) => `${String(r.date)} — ${String(r.title)}`}
+          rowLabel="{{date}} — {{title}}"
         />
       </Card>
     </div>

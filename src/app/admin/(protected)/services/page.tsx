@@ -9,7 +9,7 @@ export default async function AdminServicesPage() {
   const supabase = await createClient()
   const { data: services } = await supabase
     .from('services')
-    .select('*, categories(id, name_bn)')
+    .select('*, service_categories!services_category_id_fkey(id, name_bn)')
     .order('display_order')
 
   return (
