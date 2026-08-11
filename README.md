@@ -14,7 +14,7 @@ Fill `.env.local` (do not commit):
 ```env
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...   # server-only; used ONLY by scripts/setup-admin.mjs
+SUPABASE_SERVICE_ROLE_KEY=...   # optional; only for scripts/setup-admin.mjs when creating admins programmatically
 ```
 
 Values from Supabase Dashboard → Project Settings → API. The service-role key must **never** be prefixed with `NEXT_PUBLIC_` or used in browser code.
@@ -25,25 +25,14 @@ Values from Supabase Dashboard → Project Settings → API. The service-role ke
 2. Paste the entire contents of `supabase/schema.sql` and run it.
 3. This creates all tables (services, categories, documents, notices, hours, breaks, holidays, special days, status override, requests, appointments, contacts, FAQs, settings, admins), RLS policies, the `site-assets` storage bucket, and Bengali seed data.
 
-## 3. Create the first Super Admin
+## 3. Create the first admin (no SQL needed)
 
-**Option A — Supabase dashboard (no script):**
-1. Supabase Dashboard → **Authentication → Users** → **Add user** → email + password → Create user.
-2. Click the user row and copy its UUID (`id`).
-3. Open `supabase/add-admin.sql`, replace `<USER_UUID>` and `<OWNER_NAME>`, then run it in the SQL Editor.
-4. If login says "Email not confirmed": **Authentication → Providers → Email** → turn OFF **Confirm email** (or click the confirmation link in the user's inbox).
+Any user created in **Supabase Dashboard → Authentication → Users → Add user** automatically becomes a **super admin** (an `auth.users` trigger adds them to `admin_users`).
 
-**Option B — script (uses the service-role key locally):**
+1. Dashboard → **Authentication → Users** → **Add user** → enter email + password → Create user.
+2. If login says "Email not confirmed": **Authentication → Providers → Email** → turn OFF **Confirm email** (or click the confirmation link in the user's inbox).
 
-```bash
-npm run setup-admin -- "owner@email.com" "a-strong-password" "Owner Name"
-```
-
-This creates the auth user and links it in `admin_users` with the `super_admin` role. Manual alternative: create the user in Supabase Auth dashboard, then run:
-
-```sql
-insert into public.admin_users (user_id, name, role) values ('<auth-user-uuid>', 'Owner', 'super_admin');
-```
+That's it — log in at `/admin`. Admins can invite more users from the panel itself (`/admin/admins`).
 
 ## 4. Run locally
 

@@ -47,10 +47,33 @@ as $$
   );
 $$;
 
+-- Any user created in the Supabase Auth dashboard (Authentication → Users
+-- → Add user) automatically becomes a super admin. No extra SQL needed.
+create or replace function public.handle_new_admin()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.admin_users (user_id, name, role, active)
+  values (new.id, coalesce(new.raw_user_meta_data ->> 'full_name', new.email), 'super_admin', true)
+  on conflict (user_id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_admin();
+
+drop policy if exists "admins can read admin_users" on public.admin_users;
 create policy "admins can read admin_users"
   on public.admin_users for select
   using (public.is_admin());
 
+drop policy if exists "admins can manage admin_users" on public.admin_users;
 create policy "admins can manage admin_users"
   on public.admin_users for all
   using (public.is_admin())
@@ -78,10 +101,12 @@ create table if not exists public.business_settings (
 
 alter table public.business_settings enable row level security;
 
+drop policy if exists "public read business_settings" on public.business_settings;
 create policy "public read business_settings"
   on public.business_settings for select
   using (true);
 
+drop policy if exists "admins manage business_settings" on public.business_settings;
 create policy "admins manage business_settings"
   on public.business_settings for all
   using (public.is_admin())
@@ -102,10 +127,12 @@ create table if not exists public.social_links (
 
 alter table public.social_links enable row level security;
 
+drop policy if exists "public read social_links" on public.social_links;
 create policy "public read social_links"
   on public.social_links for select
   using (true);
 
+drop policy if exists "admins manage social_links" on public.social_links;
 create policy "admins manage social_links"
   on public.social_links for all
   using (public.is_admin())
@@ -127,10 +154,12 @@ create table if not exists public.business_hours (
 
 alter table public.business_hours enable row level security;
 
+drop policy if exists "public read business_hours" on public.business_hours;
 create policy "public read business_hours"
   on public.business_hours for select
   using (true);
 
+drop policy if exists "admins manage business_hours" on public.business_hours;
 create policy "admins manage business_hours"
   on public.business_hours for all
   using (public.is_admin())
@@ -150,10 +179,12 @@ create table if not exists public.break_times (
 
 alter table public.break_times enable row level security;
 
+drop policy if exists "public read break_times" on public.break_times;
 create policy "public read break_times"
   on public.break_times for select
   using (true);
 
+drop policy if exists "admins manage break_times" on public.break_times;
 create policy "admins manage break_times"
   on public.break_times for all
   using (public.is_admin())
@@ -172,10 +203,12 @@ create table if not exists public.holidays (
 
 alter table public.holidays enable row level security;
 
+drop policy if exists "public read holidays" on public.holidays;
 create policy "public read holidays"
   on public.holidays for select
   using (true);
 
+drop policy if exists "admins manage holidays" on public.holidays;
 create policy "admins manage holidays"
   on public.holidays for all
   using (public.is_admin())
@@ -195,10 +228,12 @@ create table if not exists public.special_days (
 
 alter table public.special_days enable row level security;
 
+drop policy if exists "public read special_days" on public.special_days;
 create policy "public read special_days"
   on public.special_days for select
   using (true);
 
+drop policy if exists "admins manage special_days" on public.special_days;
 create policy "admins manage special_days"
   on public.special_days for all
   using (public.is_admin())
@@ -219,10 +254,12 @@ create table if not exists public.shop_status_overrides (
 
 alter table public.shop_status_overrides enable row level security;
 
+drop policy if exists "public read shop_status_overrides" on public.shop_status_overrides;
 create policy "public read shop_status_overrides"
   on public.shop_status_overrides for select
   using (true);
 
+drop policy if exists "admins manage shop_status_overrides" on public.shop_status_overrides;
 create policy "admins manage shop_status_overrides"
   on public.shop_status_overrides for all
   using (public.is_admin())
@@ -246,10 +283,12 @@ create table if not exists public.service_categories (
 
 alter table public.service_categories enable row level security;
 
+drop policy if exists "public read service_categories" on public.service_categories;
 create policy "public read service_categories"
   on public.service_categories for select
   using (public.is_admin() or active);
 
+drop policy if exists "admins manage service_categories" on public.service_categories;
 create policy "admins manage service_categories"
   on public.service_categories for all
   using (public.is_admin())
@@ -282,10 +321,12 @@ create index if not exists idx_services_active on public.services (active, displ
 
 alter table public.services enable row level security;
 
+drop policy if exists "public read services" on public.services;
 create policy "public read services"
   on public.services for select
   using (public.is_admin() or active);
 
+drop policy if exists "admins manage services" on public.services;
 create policy "admins manage services"
   on public.services for all
   using (public.is_admin())
@@ -311,10 +352,12 @@ create index if not exists idx_service_documents_service on public.service_docum
 
 alter table public.service_documents enable row level security;
 
+drop policy if exists "public read service_documents" on public.service_documents;
 create policy "public read service_documents"
   on public.service_documents for select
   using (true);
 
+drop policy if exists "admins manage service_documents" on public.service_documents;
 create policy "admins manage service_documents"
   on public.service_documents for all
   using (public.is_admin())
@@ -349,6 +392,7 @@ create index if not exists idx_notices_type on public.notices (type);
 
 alter table public.notices enable row level security;
 
+drop policy if exists "public read published notices" on public.notices;
 create policy "public read published notices"
   on public.notices for select
   using (
@@ -360,6 +404,7 @@ create policy "public read published notices"
     )
   );
 
+drop policy if exists "admins manage notices" on public.notices;
 create policy "admins manage notices"
   on public.notices for all
   using (public.is_admin())
@@ -391,19 +436,23 @@ create index if not exists idx_service_requests_status on public.service_request
 
 alter table public.service_requests enable row level security;
 
+drop policy if exists "customers can create service_requests" on public.service_requests;
 create policy "customers can create service_requests"
   on public.service_requests for insert
   with check (true);
 
+drop policy if exists "public read own service_requests" on public.service_requests;
 create policy "public read own service_requests"
   on public.service_requests for select
   using (public.is_admin());
 
+drop policy if exists "admins update service_requests" on public.service_requests;
 create policy "admins update service_requests"
   on public.service_requests for update
   using (public.is_admin())
   with check (public.is_admin());
 
+drop policy if exists "admins delete service_requests" on public.service_requests;
 create policy "admins delete service_requests"
   on public.service_requests for delete
   using (public.is_admin());
@@ -430,19 +479,23 @@ create index if not exists idx_appointments_date on public.appointments (date);
 
 alter table public.appointments enable row level security;
 
+drop policy if exists "customers can create appointments" on public.appointments;
 create policy "customers can create appointments"
   on public.appointments for insert
   with check (true);
 
+drop policy if exists "public read own appointments" on public.appointments;
 create policy "public read own appointments"
   on public.appointments for select
   using (public.is_admin());
 
+drop policy if exists "admins update appointments" on public.appointments;
 create policy "admins update appointments"
   on public.appointments for update
   using (public.is_admin())
   with check (public.is_admin());
 
+drop policy if exists "admins delete appointments" on public.appointments;
 create policy "admins delete appointments"
   on public.appointments for delete
   using (public.is_admin());
@@ -463,19 +516,23 @@ create table if not exists public.contact_messages (
 
 alter table public.contact_messages enable row level security;
 
+drop policy if exists "customers can create contact_messages" on public.contact_messages;
 create policy "customers can create contact_messages"
   on public.contact_messages for insert
   with check (true);
 
+drop policy if exists "public read own contact_messages" on public.contact_messages;
 create policy "public read own contact_messages"
   on public.contact_messages for select
   using (public.is_admin());
 
+drop policy if exists "admins update contact_messages" on public.contact_messages;
 create policy "admins update contact_messages"
   on public.contact_messages for update
   using (public.is_admin())
   with check (public.is_admin());
 
+drop policy if exists "admins delete contact_messages" on public.contact_messages;
 create policy "admins delete contact_messages"
   on public.contact_messages for delete
   using (public.is_admin());
@@ -496,10 +553,12 @@ create table if not exists public.faqs (
 
 alter table public.faqs enable row level security;
 
+drop policy if exists "public read faqs" on public.faqs;
 create policy "public read faqs"
   on public.faqs for select
   using (public.is_admin() or active);
 
+drop policy if exists "admins manage faqs" on public.faqs;
 create policy "admins manage faqs"
   on public.faqs for all
   using (public.is_admin())
@@ -517,10 +576,12 @@ create table if not exists public.site_settings (
 
 alter table public.site_settings enable row level security;
 
+drop policy if exists "public read site_settings" on public.site_settings;
 create policy "public read site_settings"
   on public.site_settings for select
   using (true);
 
+drop policy if exists "admins manage site_settings" on public.site_settings;
 create policy "admins manage site_settings"
   on public.site_settings for all
   using (public.is_admin())
