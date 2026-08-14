@@ -164,13 +164,33 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-brand-900">
-        <div className="mx-auto max-w-6xl px-4 py-5 pb-24 md:pb-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-          <div>
+        <div className="mx-auto max-w-6xl px-4 py-6 pb-24 md:pb-6 flex flex-col items-center gap-3 text-xs text-slate-400">
+          <div className="text-center">
             © {new Date().getFullYear()} {settings?.name_bn ?? 'মাস্টার্স কম্পিউটার'} — সর্বস্বত্ব সংরক্ষিত
           </div>
-          <div>
-            ডেভেলপার:{' '}
-            <span className="text-brand-300">Md Labib Al Dween</span>
+          <div className="flex flex-col items-center gap-1 text-center">
+            <div>
+              ডেভেলপার:{' '}
+              <a
+                href="https://labibaldween.com"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-gold-400 hover:underline"
+              >
+                Md Labib Al Dween
+              </a>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+              <a href="https://labibaldween.com" target="_blank" rel="noreferrer" className="hover:text-gold-400 hover:underline" dir="ltr">
+                🌐 labibaldween.com
+              </a>
+              <a href="mailto:labib@labibaldween.com" className="hover:text-gold-400 hover:underline" dir="ltr">
+                ✉ labib@labibaldween.com
+              </a>
+              <a href="tel:01341739202" className="hover:text-gold-400 hover:underline" dir="ltr">
+                ☎ 01341739202
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ const mono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
-    default: 'মাস্টার্স কম্পিউটার — সালথা বাজার, ফরিদপুর',
+    default: 'মাস্টার্স কম্পিউটার',
     template: '%s | মাস্টার্স কম্পিউটার',
   },
   description:

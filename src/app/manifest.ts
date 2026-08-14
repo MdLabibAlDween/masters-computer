@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'মাস্টার্স কম্পিউটার — সালথা বাজার, ফরিদপুর',
+    name: 'মাস্টার্স কম্পিউটার',
     short_name: 'মাস্টার্স কম্পিউটার',
     description:
       'অনলাইন আবেদন, টিকিট, ভিসা, NID, জমি সংক্রান্ত সেবা এবং বিভিন্ন ডিজিটাল সেবা। সালথা বাজার, ফরিদপুর।',
