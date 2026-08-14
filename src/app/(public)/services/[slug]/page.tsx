@@ -46,9 +46,9 @@ export default async function ServiceDetailPage({
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Main content */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8">
+            <div className="card-surface rounded-3xl p-6 sm:p-8">
               <div className="flex items-start gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-50 text-4xl shrink-0">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sage-100 to-sage-200 text-4xl shrink-0">
                   {service.icon || '🛠'}
                 </div>
                 <div>
@@ -57,7 +57,9 @@ export default async function ServiceDetailPage({
                   </h1>
                   <p className="text-sm text-slate-400 font-semibold mt-1">
                     {service.service_categories?.name_bn}
-                    {service.featured && <span className="ml-2 text-gold-600">⭐ জনপ্রিয়</span>}
+                    {(service.featured || service.service_categories?.featured) && (
+                      <span className="ml-2 text-gold-600">⭐ জনপ্রিয়</span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -69,14 +71,27 @@ export default async function ServiceDetailPage({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={service.image_url} alt={service.name_bn} className="mt-6 rounded-2xl w-full object-cover" />
               )}
+
+              {service.url && (
+                <div className="mt-6">
+                  <a
+                    href={service.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-2.5 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
+                  >
+                    🔗 সোর্স / বিস্তারিত দেখুন
+                  </a>
+                </div>
+              )}
             </div>
 
             {docs.length > 0 && (
-              <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8">
+              <div className="card-surface rounded-3xl p-6 sm:p-8">
                 <h2 className="text-xl font-extrabold text-brand-900">📄 প্রয়োজনীয় কাগজপত্র</h2>
                 <ul className="mt-4 space-y-2.5">
                   {docs.map((doc) => (
-                    <li key={doc.id} className="flex items-start gap-3 rounded-xl bg-brand-50/60 px-4 py-3">
+                    <li key={doc.id} className="flex items-start gap-3 rounded-xl card-glass px-4 py-3">
                       <span className="text-brand-600 font-bold">✔</span>
                       <div>
                         <div className="font-bold text-slate-800">{doc.document_name}</div>
@@ -85,9 +100,6 @@ export default async function ServiceDetailPage({
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-xs text-slate-400 font-medium">
-                  প্রয়োজনে অতিরিক্ত কাগজপত্র চাওয়া হতে পারে। সঠিক তালিকার জন্য দোকানে যোগাযোগ করুন।
-                </p>
               </div>
             )}
 
@@ -114,7 +126,7 @@ export default async function ServiceDetailPage({
 
           {/* Sidebar */}
           <div className="space-y-8">
-            <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">
+            <div className="card-surface rounded-3xl p-6">
               <h2 className="text-lg font-extrabold text-brand-900">📩 সেবা আবেদন করুন</h2>
               <p className="mt-1 mb-5 text-sm text-slate-500">
                 নাম ও ফোন নম্বর দিলেই আমরা যোগাযোগ করব।
@@ -123,7 +135,7 @@ export default async function ServiceDetailPage({
             </div>
 
             {categoryServices.length > 0 && (
-              <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6">
+              <div className="card-surface rounded-3xl p-6">
                 <h2 className="text-lg font-extrabold text-brand-900 mb-4">
                   {service.service_categories?.name_bn ?? 'একই ক্যাটাগরি'} — আরও সেবা
                 </h2>

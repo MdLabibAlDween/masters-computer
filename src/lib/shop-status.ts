@@ -86,7 +86,7 @@ export function getDhakaWall(now: Date): DhakaWall {
     Number(parts.month) - 1,
     Number(parts.day)
   ).getDay()
-  const ourWeekday = (jsWeekday + 6) % 7
+  const ourWeekday = (jsWeekday + 1) % 7
 
   return {
     year: Number(parts.year),
@@ -324,11 +324,11 @@ function findNextOpening(input: ShopStatusInput, wall: DhakaWall): NextOpening |
     const special = input.specialDays.find((s) => s.date === dateKey)
     if (special) {
       return {
-        dayName: DAYS_BN[(d.getUTCDay() + 6) % 7],
+        dayName: DAYS_BN[(d.getUTCDay() + 1) % 7],
         open: parseTimeToMin(special.open_time),
       }
     }
-    const weekday = (d.getUTCDay() + 6) % 7
+    const weekday = (d.getUTCDay() + 1) % 7
     const day = input.hours.find((h) => h.day_of_week === weekday)
     if (day && day.is_open) {
       return { dayName: DAYS_BN[weekday], open: parseTimeToMin(day.open_time) }

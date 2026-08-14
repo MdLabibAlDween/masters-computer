@@ -68,7 +68,7 @@ export default function LoginForm() {
             alt="মাস্টার্স কম্পিউটার"
             width={72}
             height={72}
-            className="mx-auto h-20 w-20 object-contain rounded-xl"
+            className="mx-auto h-20 w-20 object-contain"
           />
           <h1 className="mt-4 text-2xl font-extrabold text-brand-900">অ্যাডমিন লগইন</h1>
           <p className="mt-1 text-sm text-slate-500">মাস্টার্স কম্পিউটার — অ্যাডমিন প্যানেল</p>

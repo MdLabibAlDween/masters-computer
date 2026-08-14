@@ -47,11 +47,5 @@ export const CONTACT_STATUS_LABELS: Record<string, string> = {
   done: 'সমাধান হয়েছে',
 }
 
-export const ADMIN_ROLES = ['super_admin', 'admin'] as const
-export const ADMIN_ROLE_LABELS: Record<string, string> = {
-  super_admin: 'সুপার অ্যাডমিন',
-  admin: 'অ্যাডমিন',
-}
-
 export const SITE_NAME = 'মাস্টার্স কম্পিউটার'
 export const SITE_ADDRESS = 'সালথা বাজার, ফরিদপুর'

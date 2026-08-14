@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { uploadSiteAsset, deleteSiteAsset } from '@/lib/uploads'
+import { slugifyAny } from '@/lib/slug'
 import type { ServiceCategory, ServiceDocument } from '@/types/db'
 import { Btn, Card, Field, inputCls, PageHeader } from './ui'
 
@@ -26,6 +27,7 @@ export default function ServiceForm({
     full_desc: string
     instructions: string
     image_url: string
+    url: string
     active: boolean
     featured: boolean
     display_order: number
@@ -43,6 +45,7 @@ export default function ServiceForm({
     full_desc: initial?.full_desc ?? '',
     instructions: initial?.instructions ?? '',
     image_url: initial?.image_url ?? '',
+    url: initial?.url ?? '',
     active: initial?.active ?? true,
     featured: initial?.featured ?? false,
     display_order: initial?.display_order ?? 0,
@@ -75,22 +78,34 @@ export default function ServiceForm({
     }
     setSaving(true)
     const supabase = createClient()
+
+    let slug = form.slug.trim()
+    if (!slug) {
+      slug = slugifyAny(form.name_en.trim() || form.name_bn.trim())
+    }
+    let uniqueSlug = slug
+    for (let i = 2; ; i++) {
+      const { data: clash, error: clashError } = await supabase
+        .from('services')
+        .select('id')
+        .eq('slug', uniqueSlug)
+        .neq('id', initial?.id ?? -1)
+        .maybeSingle()
+      if (clashError || !clash) break
+      uniqueSlug = `${slug}-${i}`
+    }
+
     const payload = {
       name_bn: form.name_bn.trim(),
       name_en: form.name_en.trim(),
-      slug:
-        form.slug.trim() ||
-        form.name_bn
-          .trim()
-          .toLowerCase()
-          .replace(/[^\p{L}\p{N}]+/gu, '-')
-          .replace(/^-+|-+$/g, ''),
+      slug: uniqueSlug,
       category_id: form.category_id ? Number(form.category_id) : null,
       icon: form.icon || '🛠',
       short_desc: form.short_desc.trim(),
       full_desc: form.full_desc.trim(),
       instructions: form.instructions.trim(),
       image_url: form.image_url,
+      url: form.url.trim(),
       active: form.active,
       featured: form.featured,
       display_order: Number(form.display_order) || 0,
@@ -186,6 +201,16 @@ export default function ServiceForm({
       <Card className="p-5 space-y-4">
         <Field label="সংক্ষিপ্ত বিবরণ (কার্ডে দেখাবে)">
           <textarea className={inputCls} rows={2} value={form.short_desc} onChange={(e) => set('short_desc', e.target.value)} />
+        </Field>
+        <Field label="URL / সোর্স লিংক" hint="ঐচ্ছিক — কার্ডে 🔗 সোর্স লিংক এবং সেবার পাতায় এমবেড করা হবে। যেমন: https://passport.gov.bd">
+          <input
+            type="url"
+            className={inputCls}
+            value={form.url}
+            onChange={(e) => set('url', e.target.value)}
+            placeholder="https://example.gov.bd"
+            dir="ltr"
+          />
         </Field>
         <Field label="বিস্তারিত বিবরণ">
           <textarea className={inputCls} rows={4} value={form.full_desc} onChange={(e) => set('full_desc', e.target.value)} />

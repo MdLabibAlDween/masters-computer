@@ -2,24 +2,17 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import type { Faq, SiteSettings } from '@/types/db'
+import type { Faq } from '@/types/db'
 import { Btn, Card, Field, PageHeader, inputCls } from './ui'
 
 export default function SettingsManager({
-  settings,
   faqs,
 }: {
-  settings: SiteSettings[]
   faqs: Faq[]
 }) {
-  const [kv, setKv] = useState<Record<string, string>>(
-    Object.fromEntries(settings.map((s) => [s.key, s.value]))
-  )
   const [faqRows, setFaqRows] = useState(faqs)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-
-  const setVal = (key: string, v: string) => setKv((m) => ({ ...m, [key]: v }))
 
   function setFaq(idx: number, patch: Partial<Faq>) {
     setFaqRows((rs) => rs.map((r, i) => (i === idx ? { ...r, ...patch } : r)))
@@ -29,12 +22,9 @@ export default function SettingsManager({
     setSaving(true)
     const supabase = createClient()
     const errors: string[] = []
-    for (const [key, value] of Object.entries(kv)) {
-      const { error } = await supabase.from('site_settings').upsert({ key, value }, { onConflict: 'key' })
-      if (error) errors.push(error.message)
-    }
     for (let i = 0; i < faqRows.length; i++) {
       const f = faqRows[i]
+      if (!(f.question ?? '').trim()) continue
       const payload = {
         question: f.question,
         answer: f.answer,
@@ -61,7 +51,7 @@ export default function SettingsManager({
     <div className="mx-auto max-w-4xl space-y-5">
       <PageHeader
         title="⚙️ সেটিংস ও FAQ"
-        subtitle="হোমপেজের কিছু পাঠ্য ও প্রশ্নোত্তর পরিচালনা করুন"
+        subtitle="প্রশ্নোত্তর (FAQ) পরিচালনা করুন"
         action={
           <Btn onClick={saveAll} disabled={saving}>
             {saving ? 'সংরক্ষণ হচ্ছে...' : '💾 সব সংরক্ষণ করুন'}
@@ -73,28 +63,6 @@ export default function SettingsManager({
           ✅ সংরক্ষিত হয়েছে
         </div>
       )}
-
-      <Card className="p-5">
-        <h2 className="text-lg font-extrabold text-brand-900 mb-4">📝 সাইট টেক্সট</h2>
-        <div className="space-y-4">
-          <Field label="কাগজপত্রের নোট (হোমপেজ ও ডকুমেন্টস পেজে দেখাবে)">
-            <textarea
-              className={inputCls}
-              rows={2}
-              value={kv.documents_note ?? ''}
-              onChange={(e) => setVal('documents_note', e.target.value)}
-            />
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="সম্পর্কে সেকশনের শিরোনাম">
-              <input className={inputCls} value={kv.home_about_title ?? ''} onChange={(e) => setVal('home_about_title', e.target.value)} />
-            </Field>
-            <Field label="নতুন সুবিধা সেকশনের শিরোনাম">
-              <input className={inputCls} value={kv.home_facilities_title ?? ''} onChange={(e) => setVal('home_facilities_title', e.target.value)} />
-            </Field>
-          </div>
-        </div>
-      </Card>
 
       <Card className="p-5">
         <div className="flex items-center justify-between mb-4">

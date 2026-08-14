@@ -1,38 +1,133 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #f4f1de;
+  --foreground: #3d405b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-brand-50: #eff6ff;
-  --color-brand-100: #dbeafe;
-  --color-brand-200: #bfdbfe;
-  --color-brand-300: #93c5fd;
-  --color-brand-400: #60a5fa;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-  --color-brand-800: #1e40af;
-  --color-brand-900: #1e3a8a;
-  --color-brand-950: #172554;
+  --color-brand-50: #f0f1f6;
+  --color-brand-100: #dcdde8;
+  --color-brand-200: #b9bcd0;
+  --color-brand-300: #969ab8;
+  --color-brand-400: #73789f;
+  --color-brand-500: #555a7d;
+  --color-brand-600: #3d405b;
+  --color-brand-700: #31334a;
+  --color-brand-800: #262839;
+  --color-brand-900: #1b1c29;
+  --color-brand-950: #14151f;
 
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #f59e0b;
-  --color-gold-600: #d97706;
+  --color-gold-300: #f7dcb0;
+  --color-gold-400: #f2cc8f;
+  --color-gold-500: #e07a5f;
+  --color-gold-600: #c95e43;
+
+  --color-sage-50: #f0f5f1;
+  --color-sage-100: #dbe7df;
+  --color-sage-200: #b9d4c4;
+  --color-sage-300: #97c1a9;
+  --color-sage-400: #81b29a;
+  --color-sage-500: #6a9c84;
+  --color-sage-600: #55806d;
+  --color-sage-700: #46695a;
+  --color-sage-800: #3a564a;
+  --color-sage-900: #31473d;
+  --color-sage-950: #1e2d26;
 
   --font-sans: var(--font-masters-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(129, 178, 154, 0.14), transparent 60%),
+    radial-gradient(900px 480px at -10% 30%, rgba(224, 122, 95, 0.08), transparent 55%),
+    #f4f1de;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-masters-sans), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--color-gold-500);
+  color: var(--color-brand-950);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(90deg, #e07a5f, #f2cc8f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #f2cc8f, #e07a5f);
+  box-shadow: 0 8px 20px -6px rgba(224, 122, 95, 0.45);
+  transition: all 0.2s ease;
+}
+.btn-gold:hover {
+  box-shadow: 0 10px 26px -6px rgba(224, 122, 95, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-brand {
+  background: linear-gradient(135deg, #e07a5f, #c95e43);
+  box-shadow: 0 8px 20px -8px rgba(224, 122, 95, 0.5);
+  transition: all 0.2s ease;
+}
+.btn-brand:hover {
+  box-shadow: 0 10px 26px -8px rgba(224, 122, 95, 0.65);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  border: 2px solid #3d405b;
+  color: #3d405b;
+  transition: all 0.2s ease;
+}
+.btn-outline:hover {
+  background: #f0f1f6;
+  transform: translateY(-1px);
+}
+
+.card-surface,
+.card-glass {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.7)) padding-box,
+    linear-gradient(135deg, rgba(224, 122, 95, 0.45), rgba(242, 204, 143, 0.55)) border-box;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 24px -12px rgba(61, 64, 91, 0.25);
+}
+
+.card-surface:hover,
+.card-glass:hover {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.78)) padding-box,
+    linear-gradient(135deg, rgba(224, 122, 95, 0.7), rgba(242, 204, 143, 0.75)) border-box;
+}
+
+.input-surface {
+  background: linear-gradient(180deg, #ffffff, #fbfaf2);
+  border: 1px solid #e2dcc0;
+  color: #3d405b;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input-surface::placeholder {
+  color: #9b9a86;
+}
+.input-surface:focus {
+  border-color: #81b29a;
+  box-shadow: 0 0 0 3px rgba(129, 178, 154, 0.25);
 }
 
 /* Hide scrollbar for marquee ticker */

@@ -23,7 +23,7 @@ Values from Supabase Dashboard → Project Settings → API. The service-role ke
 
 1. Open the Supabase SQL Editor.
 2. Paste the entire contents of `supabase/schema.sql` and run it.
-3. This creates all tables (services, categories, documents, notices, hours, breaks, holidays, special days, status override, requests, appointments, contacts, FAQs, settings, admins), RLS policies, the `site-assets` storage bucket, and Bengali seed data.
+3. This creates all tables (services, categories, documents, notices, hours, breaks, holidays, special days, status override, requests, contacts, FAQs, settings, admins), RLS policies, the `site-assets` storage bucket, and Bengali seed data.
 
 ## 3. Create the first admin (no SQL needed)
 
@@ -79,7 +79,6 @@ Everything is data-driven; the owner updates the site entirely from the admin pa
 | Notices, facility announcements | `/admin/notices` |
 | Phone, email, address, maps, social links, logo | `/admin/business` |
 | FAQ & homepage texts | `/admin/settings` |
-| Manage admin users (super admin only) | `/admin/admins` |
-| Handle requests/appointments/contact messages | `/admin/requests`, `/admin/appointments`, `/admin/contacts` |
+| Handle requests / contact messages | `/admin/requests`, `/admin/contacts` |
 
 Shop status (🟢 খোলা / 🔴 বন্ধ / 🟡 বিরতি / 🟠 শীঘ্রই বন্ধ / 🎉 ছুটির দিন / ⛔ সাময়িক বন্ধ) is computed automatically in **Asia/Dhaka** and updates on the website instantly.

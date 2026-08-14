@@ -11,7 +11,7 @@ export default async function AboutPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <SectionHeading title="আমাদের সম্পর্কে" icon="🏪" subtitle="বিশ্বস্ততার সাথে প্রতিটি সেবা" />
 
-      <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-10">
+      <div className="card-surface rounded-3xl p-6 sm:p-10">
         <h1 className="text-2xl font-extrabold text-brand-900">{settings?.name_bn}</h1>
         <p className="mt-1 font-bold text-gold-600">📍 {settings?.address}</p>
         <p className="mt-5 text-slate-600 leading-relaxed whitespace-pre-line">
@@ -20,7 +20,7 @@ export default async function AboutPage() {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-2xl bg-brand-50/60 p-5">
+            <div key={f.title} className="rounded-2xl card-glass p-5">
               <div className="text-2xl">{f.icon}</div>
               <h3 className="mt-2 font-extrabold text-brand-900">{f.title}</h3>
               <p className="mt-1 text-sm text-slate-600">{f.desc}</p>

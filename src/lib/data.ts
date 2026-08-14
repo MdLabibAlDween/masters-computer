@@ -70,7 +70,7 @@ export async function getServices(options?: {
   const supabase = await createClient()
   let query = supabase
     .from('services')
-    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon)')
+    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon, featured)')
   if (!options?.includeInactive) query = query.eq('active', true)
   if (options?.featuredOnly) query = query.eq('featured', true)
   const { data } = await query.order('display_order')
@@ -83,8 +83,9 @@ export async function getServiceBySlug(
   const supabase = await createClient()
   const { data } = await supabase
     .from('services')
-    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon)')
+    .select('*, service_categories!services_category_id_fkey(id, name_bn, slug, icon, featured)')
     .eq('slug', slug)
+    .limit(1)
     .maybeSingle()
   return data
 }
@@ -121,6 +122,19 @@ export async function getNotices(options?: {
   return data ?? []
 }
 
+export async function getSliderNotices(): Promise<Notice[]> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('notices')
+    .select('*, services(id, slug, name_bn)')
+    .eq('show_in_slider', true)
+    .order('pinned', { ascending: false })
+    .order('publish_date', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(8)
+  return data ?? []
+}
+
 export async function getFaqs(): Promise<Faq[]> {
   const supabase = await createClient()
   const { data } = await supabase
@@ -128,7 +142,7 @@ export async function getFaqs(): Promise<Faq[]> {
     .select('*')
     .eq('active', true)
     .order('display_order')
-  return data ?? []
+  return (data ?? []).filter((f) => (f.question ?? '').trim().length > 0)
 }
 
 export async function getSiteSettings(keys: string[]): Promise<Record<string, string>> {

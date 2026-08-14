@@ -24,10 +24,10 @@ export default async function AdminDashboard() {
     schedule.hours.find((h) => h.day_of_week === getDhakaWeekday()) ?? null
 
   const cards = [
-    { label: 'সব সেবা', value: services.count ?? 0, icon: '🛠', href: '/admin/services', tone: 'bg-brand-50 border-brand-200' },
-    { label: 'সক্রিয় নোটিশ', value: notices.count ?? 0, icon: '📢', href: '/admin/notices', tone: 'bg-blue-50 border-blue-200' },
-    { label: 'নতুন সুবিধা', value: facilities.count ?? 0, icon: '✨', href: '/admin/notices', tone: 'bg-yellow-50 border-yellow-200' },
-    { label: 'নতুন আবেদন', value: requests.count ?? 0, icon: '📩', href: '/admin/requests', tone: 'bg-emerald-50 border-emerald-200' },
+    { label: 'সব সেবা', value: services.data?.length ?? 0, icon: '🛠', href: '/admin/services', tone: 'bg-brand-50 border-brand-200' },
+    { label: 'সক্রিয় নোটিশ', value: notices.data?.length ?? 0, icon: '📢', href: '/admin/notices', tone: 'bg-blue-50 border-blue-200' },
+    { label: 'নতুন সুবিধা', value: facilities.data?.length ?? 0, icon: '✨', href: '/admin/notices', tone: 'bg-yellow-50 border-yellow-200' },
+    { label: 'নতুন আবেদন', value: requests.data?.length ?? 0, icon: '📩', href: '/admin/requests', tone: 'bg-emerald-50 border-emerald-200' },
   ]
 
   return (
@@ -99,7 +99,7 @@ export default async function AdminDashboard() {
 function getDhakaWeekday(): number {
   const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short' }).format(new Date())
   const jsWeekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts)
-  return (jsWeekday + 6) % 7
+  return (jsWeekday + 1) % 7
 }
 
 const BN = '০১২৩৪৫৬৭৮৯'

@@ -18,7 +18,7 @@ export default async function ServicesPage() {
       />
 
       {!hasServices && (
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-10 text-center text-slate-500">
+        <div className="card-glass rounded-2xl p-10 text-center text-slate-500">
           শীঘ্রই সেবার তালিকা যুক্ত করা হবে। {''}
           <a href="/contact" className="text-brand-600 font-bold underline">যোগাযোগ করুন</a>
         </div>
@@ -31,7 +31,7 @@ export default async function ServicesPage() {
           return (
             <section key={cat.id} id={`cat-${cat.slug}`} className="scroll-mt-24">
               <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-2xl">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-sage-100 to-sage-200 text-2xl">
                   {cat.icon}
                 </div>
                 <div>

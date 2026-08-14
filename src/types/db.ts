@@ -3,15 +3,6 @@
 
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
-export type AdminUser = {
-  id: string
-  user_id: string
-  name: string
-  role: 'super_admin' | 'admin'
-  active: boolean
-  created_at: string
-}
-
 export type BusinessSettings = {
   id: number
   name_bn: string
@@ -97,6 +88,7 @@ export type Service = {
   instructions: string
   icon: string
   image_url: string
+  url: string
   active: boolean
   featured: boolean
   display_order: number
@@ -105,7 +97,7 @@ export type Service = {
 }
 
 export type ServiceWithCategory = Service & {
-  service_categories: Pick<ServiceCategory, 'id' | 'name_bn' | 'slug' | 'icon'> | null
+  service_categories: Pick<ServiceCategory, 'id' | 'name_bn' | 'slug' | 'icon' | 'featured'> | null
 }
 
 export type ServiceDocument = {
@@ -138,6 +130,7 @@ export type Notice = {
   publish_date: string
   expiry_date: string | null
   pinned: boolean
+  show_in_slider: boolean
   show_on_homepage: boolean
   published: boolean
   created_at: string

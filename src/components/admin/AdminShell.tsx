@@ -34,16 +34,15 @@ const NAV_GROUPS: { title?: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/notices', label: 'সব নোটিশ', icon: '📢' },
       { href: '/admin/notices/new', label: 'নতুন নোটিশ', icon: '✍️' },
+      { href: '/admin/slider', label: 'নোটিশ স্লাইডার', icon: '🎠' },
     ],
   },
   {
     items: [
       { href: '/admin/requests', label: 'সেবা আবেদন', icon: '📩' },
-      { href: '/admin/appointments', label: 'অ্যাপয়েন্টমেন্ট', icon: '📅' },
       { href: '/admin/contacts', label: 'যোগাযোগের বার্তা', icon: '✉' },
       { href: '/admin/business', label: 'ব্যবসার তথ্য', icon: '🏢' },
       { href: '/admin/settings', label: 'সেটিংস ও FAQ', icon: '⚙️' },
-      { href: '/admin/admins', label: 'অ্যাডমিন ইউজার', icon: '👥' },
     ],
   },
 ]
@@ -77,7 +76,7 @@ export default function AdminShell({
             alt="লোগো"
             width={40}
             height={40}
-            className="h-10 w-10 object-contain rounded-lg bg-white/10"
+            className="h-10 w-10 object-contain"
           />
           <div>
             <div className="font-bold text-white text-sm">মাস্টার্স কম্পিউটার</div>
@@ -94,10 +93,7 @@ export default function AdminShell({
               )}
               <div className="space-y-0.5">
                 {group.items.map((item) => {
-                  const active =
-                    item.href === '/admin'
-                      ? pathname === '/admin'
-                      : pathname.startsWith(item.href)
+                  const active = pathname === item.href
                   return (
                     <Link
                       key={item.href}
@@ -151,8 +147,7 @@ export default function AdminShell({
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_12px_rgba(0,0,0,0.1)] overflow-x-auto no-scrollbar">
         <div className="flex min-w-max items-center">
           {NAV_GROUPS.flatMap((g) => g.items).map((item) => {
-            const active =
-              item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href)
+            const active = pathname === item.href
             return (
               <Link
                 key={item.href}

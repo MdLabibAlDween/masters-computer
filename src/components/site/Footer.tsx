@@ -37,8 +37,9 @@ export default function Footer() {
   const whatsapp = social?.whatsapp || ''
 
   return (
-    <footer className="bg-brand-950 text-slate-300 mt-16">
-      <div className="mx-auto max-w-6xl px-4 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="bg-brand-950 text-slate-300 mt-16 relative">
+      <div className="h-1.5 bg-gradient-to-r from-gold-500 via-brand-700 to-sage-400" />
+      <div className="mx-auto max-w-6xl px-4 py-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-3">
             <Image
@@ -46,7 +47,7 @@ export default function Footer() {
               alt={settings?.name_bn ?? 'মাস্টার্স কম্পিউটার'}
               width={48}
               height={48}
-              className="h-12 w-12 object-contain rounded-lg bg-white/10"
+              className="h-12 w-12 object-contain"
             />
             <div>
               <div className="font-bold text-white text-lg leading-tight">
@@ -163,7 +164,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-brand-900">
-        <div className="mx-auto max-w-6xl px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+        <div className="mx-auto max-w-6xl px-4 py-5 pb-24 md:pb-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
           <div>
             © {new Date().getFullYear()} {settings?.name_bn ?? 'মাস্টার্স কম্পিউটার'} — সর্বস্বত্ব সংরক্ষিত
           </div>

@@ -16,9 +16,10 @@ export default async function StatusPage() {
       <ShopStatusCard schedule={schedule} variant="page" />
 
       {/* Weekly schedule */}
-      <div className="mt-10 rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8">
+      <div className="mt-10 card-surface rounded-3xl p-6 sm:p-8">
         <h2 className="text-xl font-extrabold text-brand-900">📅 সাপ্তাহিক সময়সূচি</h2>
-        <table className="mt-4 w-full text-sm">
+        <div className="mt-4 overflow-x-auto">
+        <table className="w-full text-sm min-w-[320px]">
           <thead>
             <tr className="text-left text-slate-400 font-semibold border-b border-slate-100">
               <th className="pb-3">দিন</th>
@@ -60,6 +61,7 @@ export default async function StatusPage() {
             })}
           </tbody>
         </table>
+        </div>
 
         {schedule.breaks.length > 0 && (
           <div className="mt-6">
@@ -78,7 +80,7 @@ export default async function StatusPage() {
       {(schedule.holidays.length > 0 || schedule.specialDays.length > 0) && (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {schedule.holidays.length > 0 && (
-            <div className="rounded-3xl bg-red-50 border border-red-100 p-6">
+            <div className="rounded-3xl card-glass border-red-300/40 p-6">
               <h3 className="font-extrabold text-red-700">🔴 বিশেষ ছুটির দিন</h3>
               <ul className="mt-3 space-y-2 text-sm font-semibold text-red-900">
                 {schedule.holidays.map((h) => (
@@ -90,7 +92,7 @@ export default async function StatusPage() {
             </div>
           )}
           {schedule.specialDays.length > 0 && (
-            <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-6">
+            <div className="rounded-3xl card-glass border-emerald-300/40 p-6">
               <h3 className="font-extrabold text-emerald-700">🟢 বিশেষ খোলার দিন</h3>
               <ul className="mt-3 space-y-2 text-sm font-semibold text-emerald-900">
                 {schedule.specialDays.map((s) => (
@@ -111,5 +113,5 @@ function isToday(dayOfWeek: number) {
   const now = new Date()
   const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Dhaka', weekday: 'short' }).format(now)
   const jsWeekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts)
-  return (jsWeekday + 6) % 7 === dayOfWeek
+  return (jsWeekday + 1) % 7 === dayOfWeek
 }

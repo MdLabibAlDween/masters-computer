@@ -1,6 +1,5 @@
 import NoticeCard from '@/components/site/NoticeCard'
 import SectionHeading from '@/components/site/SectionHeading'
-import NoticeTicker from '@/components/site/NoticeTicker'
 import { getNotices } from '@/lib/data'
 import { NOTICE_TYPES, NOTICE_TYPE_OPTIONS } from '@/lib/constants'
 
@@ -19,9 +18,6 @@ export default async function NoticesPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       <SectionHeading title="নোটিশ ও আপডেট" icon="📢" subtitle="দোকানের নতুন ঘোষণা ও আপডেটসমূহ" />
-      <div className="mb-8">
-        <NoticeTicker notices={notices} />
-      </div>
 
       {pinned.length > 0 && (
         <div className="mb-10 space-y-4">
@@ -55,7 +51,7 @@ export default async function NoticesPage() {
       })}
 
       {notices.length === 0 && (
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-10 text-center text-slate-500">
+        <div className="card-glass rounded-2xl p-10 text-center text-slate-500">
           বর্তমানে কোনো নোটিশ নেই।
         </div>
       )}

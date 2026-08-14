@@ -10,8 +10,8 @@ export default function NoticeCard({ notice }: { notice: Notice }) {
 
   return (
     <article
-      className={`rounded-2xl border bg-white p-5 shadow-sm hover:shadow-md transition-shadow ${
-        notice.pinned ? 'border-gold-300 ring-1 ring-gold-200' : 'border-slate-100'
+      className={`card-glass rounded-2xl p-5 hover:shadow-md transition-shadow ${
+        notice.pinned ? 'ring-1 ring-gold-300' : ''
       }`}
     >
       <div className="flex items-center gap-2 flex-wrap">
@@ -37,7 +37,7 @@ export default function NoticeCard({ notice }: { notice: Notice }) {
       {(notice.cta_text || related) && (
         <Link
           href={ctaUrl || '#'}
-          className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand-700 px-4 py-2 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
+          className="btn-brand inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-bold text-white"
         >
           {notice.cta_text || related?.name_bn || 'বিস্তারিত'} →
         </Link>

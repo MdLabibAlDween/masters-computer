@@ -17,19 +17,19 @@ export default async function DocumentsPage() {
     <div className="mx-auto max-w-4xl px-4 py-12">
       <SectionHeading title="প্রয়োজনীয় কাগজপত্র" icon="📄" subtitle="প্রতিটি সেবার জন্য কী কী কাগজপত্র লাগে" />
 
-      <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-semibold text-amber-800">
+      <div className="mb-8 rounded-2xl card-glass border-gold-500/40 px-5 py-4 text-sm font-semibold text-gold-600">
         💡 {texts.documents_note || 'প্রয়োজনীয় কাগজপত্র সেবার ধরন অনুযায়ী পরিবর্তিত হতে পারে।'}
       </div>
 
       {withDocs.length === 0 && (
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-10 text-center text-slate-500">
+        <div className="card-glass rounded-2xl p-10 text-center text-slate-500">
           শীঘ্রই কাগজপত্রের তালিকা যুক্ত হবে।
         </div>
       )}
 
       <div className="space-y-8">
         {withDocs.map((service) => (
-          <div key={service.id} className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8">
+          <div key={service.id} className="card-surface rounded-3xl p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-2xl">{service.icon}</span>
               <h2 className="text-lg font-extrabold text-brand-900">{service.name_bn}</h2>
@@ -42,7 +42,7 @@ export default async function DocumentsPage() {
             </div>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {docsByService[service.id].map((doc) => (
-                <li key={doc.id} className="flex items-start gap-3 rounded-xl bg-brand-50/60 px-4 py-3">
+                <li key={doc.id} className="flex items-start gap-3 rounded-xl card-glass px-4 py-3">
                   <span className="text-brand-600 font-bold">✔</span>
                   <div>
                     <div className="font-bold text-slate-800">{doc.document_name}</div>

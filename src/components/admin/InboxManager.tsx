@@ -16,15 +16,15 @@ export default function InboxManager({
   statusOptions,
   statusLabels,
   columns,
-  renderExtra,
+  noteField,
 }: {
-  table: 'service_requests' | 'appointments' | 'contact_messages'
+  table: 'service_requests' | 'contact_messages'
   rows: Row[]
   statusField: string
   statusOptions: string[]
   statusLabels: Record<string, string>
   columns: { key: string; label: string }[]
-  renderExtra?: (row: Row) => React.ReactNode
+  noteField?: string
 }) {
   const [items, setItems] = useState(rows)
 
@@ -88,7 +88,11 @@ export default function InboxManager({
                 {String(row.message)}
               </p>
             )}
-            {renderExtra && renderExtra(row)}
+            {noteField && row[noteField] && (
+              <p className="mt-2 text-xs font-semibold text-slate-500">
+                নোট: {String(row[noteField])}
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <Badge tone={toneFor(String(row[statusField]))}>

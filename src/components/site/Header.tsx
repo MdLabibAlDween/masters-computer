@@ -2,15 +2,18 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import type { BusinessSettings, ShopStatusOverride } from '@/types/db'
+import type { BusinessSettings, Notice, ShopStatusOverride } from '@/types/db'
 import type { ShopStatusInput } from '@/lib/shop-status'
 import ShopStatusCard from '@/components/site/ShopStatusCard'
+import NoticeTicker from '@/components/site/NoticeTicker'
 
 const NAV = [
   { href: '/', label: 'হোম' },
   { href: '/services', label: 'সেবাসমূহ' },
+  { href: '/request', label: 'সেবা আবেদন' },
   { href: '/notices', label: 'নোটিশ' },
   { href: '/faq', label: 'প্রশ্নোত্তর' },
   { href: '/contact', label: 'যোগাযোগ' },
@@ -25,9 +28,10 @@ const EMPTY_SCHEDULE: ShopStatusInput = {
 }
 
 export default function Header() {
-  const [open, setOpen] = useState(false)
+  const pathname = usePathname()
   const [settings, setSettings] = useState<BusinessSettings | null>(null)
   const [schedule, setSchedule] = useState<ShopStatusInput>(EMPTY_SCHEDULE)
+  const [notices, setNotices] = useState<Notice[]>([])
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -40,8 +44,9 @@ export default function Header() {
       supabase.from('holidays').select('*').order('date'),
       supabase.from('special_days').select('*').order('date'),
       supabase.from('shop_status_overrides').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('notices').select('*').eq('published', true).limit(10),
     ])
-      .then(([s, h, b, hol, sp, o]) => {
+      .then(([s, h, b, hol, sp, o, n]) => {
         if (!alive) return
         setSettings(s.data)
         setSchedule({
@@ -51,6 +56,7 @@ export default function Header() {
           specialDays: sp.data ?? [],
           override: (o.data as ShopStatusOverride | null) ?? null,
         })
+        setNotices(n.data ?? [])
         setLoaded(true)
       })
       .catch(() => {
@@ -65,101 +71,91 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100 shadow-sm">
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex h-16 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3 shrink-0" onClick={() => setOpen(false)}>
+          <Link href="/" className="flex items-center gap-3 shrink-0 min-w-0">
             <Image
               src={settings?.logo_url || '/logo.png'}
               alt={settings?.name_bn ?? 'মাস্টার্স কম্পিউটার'}
               width={44}
               height={44}
-              className="h-11 w-11 object-contain rounded-lg bg-white"
+              className="h-11 w-11 object-contain shrink-0"
             />
-            <div className="leading-tight">
-              <div className="font-bold text-brand-900 text-lg">
+            <div className="leading-tight min-w-0">
+              <div className="font-bold text-brand-900 text-lg truncate">
                 {settings?.name_bn ?? 'মাস্টার্স কম্পিউটার'}
               </div>
-              <div className="text-[11px] text-slate-500 font-medium">
+              <div className="text-[11px] text-slate-500 font-medium truncate">
                 {settings?.address || 'সালথা বাজার, ফরিদপুর'}
               </div>
             </div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:text-brand-700 hover:bg-brand-50 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) => {
+              const active = isActive(pathname, item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={`relative px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                    active
+                      ? 'bg-brand-50 text-brand-700 font-bold'
+                      : 'text-slate-700 hover:text-brand-700 hover:bg-brand-50'
+                  }`}
+                >
+                  {item.label}
+                  {active && (
+                    <span className="absolute left-1/2 -translate-x-1/2 -bottom-0.5 h-1 w-6 rounded-full bg-gradient-to-r from-gold-500 to-sage-400" />
+                  )}
+                </Link>
+              )
+            })}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-3">
-            {loaded && <ShopStatusCard schedule={schedule} variant="chip" />}
-            {settings?.phone && (
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
+            {loaded ? (
+              <ShopStatusCard schedule={schedule} variant="chip" />
+            ) : (
+              <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 animate-pulse">
+                <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+                <span className="h-3.5 w-20 rounded bg-slate-200" />
+              </div>
+            )}
+            {settings?.phone ? (
               <a
                 href={`tel:${settings.phone}`}
-                className="inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
+                className="hidden xl:inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
               >
                 <span className="text-gold-400">☎</span>
                 <span dir="ltr">{settings.phone}</span>
               </a>
+            ) : (
+              <div className="hidden xl:inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 animate-pulse">
+                <span className="h-3.5 w-24 rounded bg-brand-200" />
+              </div>
             )}
           </div>
-
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg hover:bg-brand-50"
-            aria-label="মেনু"
-          >
-            <svg className="h-6 w-6 text-brand-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              {open ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
-
-        {open && (
-          <nav className="md:hidden pb-4 flex flex-col gap-2">
-            {loaded && <ShopStatusCard schedule={schedule} variant="chip" />}
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="px-4 py-3 rounded-lg text-sm font-semibold text-slate-700 hover:bg-brand-50"
-              >
-                {item.label}
-              </Link>
-            ))}
-            {settings?.phone && (
-              <a
-                href={`tel:${settings.phone}`}
-                onClick={() => setOpen(false)}
-                className="mt-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-4 py-3 text-sm font-bold text-white"
-              >
-                <span className="text-gold-400">☎</span>
-                <span dir="ltr">{settings.phone}</span>
-              </a>
-            )}
-          </nav>
-        )}
       </div>
-      {loaded && schedule.override && (
+
+        {loaded && schedule.override && (
         <HeaderStatusBar label={schedule.override.status === 'force_open' ? 'সাময়িকভাবে খোলা' : schedule.override.status === 'force_closed' || schedule.override.status === 'temp_closed' ? 'সাময়িকভাবে বন্ধ' : ''} />
       )}
+
+      {notices.length > 0 && <NoticeTicker notices={notices} />}
     </header>
   )
+}
+
+function isActive(pathname: string, href: string) {
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(`${href}/`)
 }
 
 function HeaderStatusBar({ label }: { label: string }) {
   if (!label) return null
   return (
-    <div className="bg-amber-500 text-white text-center text-xs font-bold py-1.5 px-4">
+    <div className="bg-gold-500 text-white text-center text-xs font-bold py-1.5 px-4">
       {label}
     </div>
   )

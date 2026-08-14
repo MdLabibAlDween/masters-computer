@@ -11,7 +11,7 @@ export default async function LocationPage() {
       <SectionHeading title="আমাদের অবস্থান" icon="📍" subtitle="সালথা বাজার, ফরিদপুর" />
 
       <div className="grid gap-6 lg:grid-cols-2 items-stretch">
-        <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm min-h-[320px]">
+        <div className="rounded-2xl overflow-hidden card-glass min-h-[320px]">
           <iframe
             src={mapEmbedUrl(settings?.maps_url, settings?.address)}
             className="h-full w-full min-h-[320px]"
@@ -21,19 +21,19 @@ export default async function LocationPage() {
           />
         </div>
 
-        <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 sm:p-8 flex flex-col">
+        <div className="card-surface rounded-3xl p-6 sm:p-8 flex flex-col">
           <h2 className="text-xl font-extrabold text-brand-900">{settings?.name_bn}</h2>
           <p className="mt-1 text-slate-500 font-semibold">{settings?.name_en}</p>
 
           <div className="mt-6 space-y-4 flex-1">
-            <div className="flex items-start gap-3 rounded-2xl bg-brand-50/60 p-4">
+            <div className="flex items-start gap-3 rounded-2xl card-glass p-4">
               <span className="text-xl">🏠</span>
               <div>
                 <div className="text-xs font-bold text-slate-400">ঠিকানা</div>
                 <div className="font-bold text-slate-800">{settings?.address}</div>
               </div>
             </div>
-            <div className="flex items-start gap-3 rounded-2xl bg-emerald-50/60 p-4">
+            <div className="flex items-start gap-3 rounded-2xl card-glass border-emerald-400/40 p-4">
               <span className="text-xl">✅</span>
               <div>
                 <div className="text-xs font-bold text-slate-400">কীভাবে পৌঁছাবেন</div>
